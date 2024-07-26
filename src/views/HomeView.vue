@@ -1,9 +1,11 @@
 <template>
-  <div class="row d-flex justify-content-center">
+<div class="row d-flex justify-content-center">
     <div class="col-auto">
-        <div class="card card-shadow card-body bg-yellow-gradient">
+        <div class="pool-info card card-shadow card-body bg-yellow-gradient">
             <h5> Welcome to Flazzard Mining Pool</h5>
-            <p>We offer some of the lowest fees on the market in our ever evolving pool.<br>We also aim to be able to payout every 10 minutes to our miners! <br>Please have some patience with us as we are just starting out, the pool will offer more features very soon.</p>
+            <p>We offer some of the lowest fees on the market in our ever evolving pool. 
+            <br/>We also aim to be able to payout every 10 minutes to our miners!
+            <br/>Please have some patience with us as we are just starting out, the pool will offer more features very soon.</p>
         </div>
     </div>
 </div>
@@ -16,13 +18,19 @@
 </div>
 <div class="row d-flex justify-content-center">
     <div class="col-auto" v-for="pool in selectedScheme" :key="pool.id">
-        <div class="info-box bg-yellow-gradient">
+        <div class="coin-card info-box bg-yellow-gradient">
             <router-link :to="{ name: 'connect', params: { id: pool.id } }" style="text-decoration: none; color: azure;">
                 <span class="info-box-text">
                     <br>
                     <img class="coinimg" :src="require(`./../assets/img/coin/icon/${pool.coin.symbol.toLowerCase()}.png`)" style="height: 25px; width: 25px;">
                     {{paymentScheme(pool.coin.name,pool.paymentProcessing.payoutScheme)}} [{{ pool.coin.symbol }}]
                     <hr>
+                    <div>
+                        <span class="text-left" style="text-align: left;">Algo:</span>
+                        <br>
+                        <span class="text-right">{{ pool.coin.algorithm }}</span>
+                    </div>
+                 
                     <table>
                         <tr style="border-bottom: 1px solid #ddd;">
                             <th style="text-align: left;">Algo:</th>
@@ -202,3 +210,14 @@ const selectedScheme = computed(function() {
       getPools()
     })
 </script>
+<style>
+div {
+    max-width: 100vw;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+</style>

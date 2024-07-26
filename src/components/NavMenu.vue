@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <div class="row">
+      <div class="row d-flex justify-content-center">
         <div class ="navBar" v-show="($route.params.id)">
             <router-link to="/"><button class="btn btn-info btn-fill btn-sm">Home</button></router-link> |
             <router-link :to="{ name: 'stats', params: { id: ($route.params.id) } }">

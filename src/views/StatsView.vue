@@ -1,50 +1,61 @@
 <template>
-  <div class="row justify-content-center">
-    <div class="col-auto">
-        <div class="info-box bg-yellow-gradient">
-            <table style="margin: auto;" v-if="pool">
-                <br>
-                <tr>
-                    <th id="time" style="padding-right: 10px;">[BlockChain]<br>[Height]</th>
-                    <th id="time" style="padding-right: 10px;">[Pending]<br>[Blocks]</th>
-                    <th id="time" style="padding-right: 10px;">[Confirmed]<br>[Blocks]</th>
-                    <th id="time" style="padding-right: 10px;">[Coin]<br>[Price]</th>
-                    <th id="time" style="padding-right: 10px;">[Block]<br>[Value]</th> 
-                    <th id="time" style="padding-right: 10px;">[Block]<br>[Reward]</th>
-                </tr>
-                <tr>
-                    <td style="padding-right: 10px;">{{ pool.networkStats.blockHeight }}</td>
-                    <td style="padding-right: 10px;">{{ filterPending.length }}</td>
-                    <td style="padding-right: 10px;">{{ pool.totalBlocks }}</td>
-                    <td style="padding-right: 10px;">${{formatHashrate(coinPrice,7,"") }}</td>
-                    <td style="padding-right: 10px;" v-if="filterConfirmed[0]">${{formatHashrate(coinPrice * filterConfirmed[0].reward,4,"")}}</td>
-                    <td style="padding-right: 10px;" v-else>wait...</td>
-                    <td style="padding-right: 10px;" v-if="filterConfirmed[0]">{{ formatHashrate(filterConfirmed[0].reward,1,pool.coin.symbol) }}</td>
-                    <td style="padding-right: 10px;" v-else>wait...</td>
-                </tr>
-                <br>
-                <tr>
-                    <th id="time" style="padding-right: 10px;">[Connected]<br>[Peers]</th>
-                    <th id="time" style="padding-right: 10px;">[Payment]<br>[Threshold]</th>
-                    <th id="time" style="padding-right: 10px;">[Pool]<br>[Fee]</th>
-                    <th id="time" style="padding-right: 10px;">[Pool]<br>[Effort]</th>
-                    <th id="time" style="padding-right: 10px;">[Pool]<br>[TTF]</th>
-                    <th id="time" style="padding-right: 10px;">[Total]<br>[Paid]</th>
-                </tr>
-                <tr>
-                    <td style="padding-right: 10px;">{{ pool.networkStats.connectedPeers }}</td>
-                    <td style="padding-right: 10px;">{{ pool.paymentProcessing.minimumPayment }} {{ pool.coin.symbol }}</td>
-                    <td style="padding-right: 10px;">{{ pool.poolFeePercent }}%</td>
-                    <td style="padding-right: 10px;" class="poolEffort">{{ formatHashrate(PoolEffort,2,"%") }}</td>
-                    <td style="padding-right: 10px;">{{convertTime(pool.networkStats.networkHashrate / pool.poolStats.poolHashrate * pool.blockRefreshInterval) }}</td>
-                    <td style="padding-right: 10px;">{{ formatHashrate(pool.totalPaid,3,"") }} [{{ pool.coin.symbol }}]</td>
-                </tr>
-                <br>
-            </table>
-        </div>
-        <eChart />
-    </div>  
-</div>
+<container>
+    <div class="row d-flex justify-content-center">
+        <div class="col-auto">
+            <div class="info-box bg-yellow-gradient" style="padding:1%">
+                <div class="statsbox bg-teal-gradient" v-if="pool">
+                    <h6><b>Blockchain<br> Height</b></h6>
+                    <h6>{{ pool.networkStats.blockHeight }}</h6>
+                </div>
+                <div class="statsbox bg-light-blue-gradient" v-if="pool">
+                    <h6><b>Pending<br> Blocks</b></h6>
+                    <h6>{{ filterPending.length }}</h6>
+                </div>
+                <table style="margin: auto;" v-if="pool">
+                    <br>
+                    <tr>
+                        <th id="time" style="padding-right: 10px;">[BlockChain]<br>[Height]</th>
+                        <th id="time" style="padding-right: 10px;">[Pending]<br>[Blocks]</th>
+                        <th id="time" style="padding-right: 10px;">[Confirmed]<br>[Blocks]</th>
+                        <th id="time" style="padding-right: 10px;">[Coin]<br>[Price]</th>
+                        <th id="time" style="padding-right: 10px;">[Block]<br>[Value]</th> 
+                        <th id="time" style="padding-right: 10px;">[Block]<br>[Reward]</th>
+                    </tr>
+                    <tr>
+                        <td style="padding-right: 10px;">{{ pool.networkStats.blockHeight }}</td>
+                        <td style="padding-right: 10px;">{{ filterPending.length }}</td>
+                        <td style="padding-right: 10px;">{{ pool.totalBlocks }}</td>
+                        <td style="padding-right: 10px;">${{formatHashrate(coinPrice,7,"") }}</td>
+                        <td style="padding-right: 10px;" v-if="filterConfirmed[0]">${{formatHashrate(coinPrice * filterConfirmed[0].reward,4,"")}}</td>
+                        <td style="padding-right: 10px;" v-else>wait...</td>
+                        <td style="padding-right: 10px;" v-if="filterConfirmed[0]">{{ formatHashrate(filterConfirmed[0].reward,1,pool.coin.symbol) }}</td>
+                        <td style="padding-right: 10px;" v-else>wait...</td>
+                    </tr>
+                    <br>
+                    <tr>
+                        <th id="time" style="padding-right: 10px;">[Connected]<br>[Peers]</th>
+                        <th id="time" style="padding-right: 10px;">[Payment]<br>[Threshold]</th>
+                        <th id="time" style="padding-right: 10px;">[Pool]<br>[Fee]</th>
+                        <th id="time" style="padding-right: 10px;">[Pool]<br>[Effort]</th>
+                        <th id="time" style="padding-right: 10px;">[Pool]<br>[TTF]</th>
+                        <th id="time" style="padding-right: 10px;">[Total]<br>[Paid]</th>
+                    </tr>
+                    <tr>
+                        <td style="padding-right: 10px;">{{ pool.networkStats.connectedPeers }}</td>
+                        <td style="padding-right: 10px;">{{ pool.paymentProcessing.minimumPayment }} {{ pool.coin.symbol }}</td>
+                        <td style="padding-right: 10px;">{{ pool.poolFeePercent }}%</td>
+                        <td style="padding-right: 10px;" class="poolEffort">{{ formatHashrate(PoolEffort,2,"%") }}</td>
+                        <td style="padding-right: 10px;">{{convertTime(pool.networkStats.networkHashrate / pool.poolStats.poolHashrate * pool.blockRefreshInterval) }}</td>
+                        <td style="padding-right: 10px;">{{ formatHashrate(pool.totalPaid,3,"") }} [{{ pool.coin.symbol }}]</td>
+                    </tr>
+                    <br>
+                </table>
+            </div>
+            <eChart />
+        </div>  
+    </div>
+</container>
+  
   </template>
   
   <script setup lang="ts">
@@ -263,4 +274,11 @@
 
 </script>
 <style>
+    .statsbox {
+        width:15%;
+        border-radius: 10px;
+        padding:0.5%;
+        margin: 1%;
+        box-shadow:0 5px 5px rgba(0,0,0,0.5);
+    }
 </style>
