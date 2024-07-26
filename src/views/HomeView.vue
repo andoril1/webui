@@ -26,8 +26,7 @@
                     {{paymentScheme(pool.coin.name,pool.paymentProcessing.payoutScheme)}} [{{ pool.coin.symbol }}]
                     <hr>
                     <div>
-                        <span class="text-left" style="text-align: left;">Algo:</span>
-                        <br>
+                        <span class="text-left">Algo:</span>
                         <span class="text-right">{{ pool.coin.algorithm }}</span>
                     </div>
                  
@@ -215,9 +214,10 @@ div {
     max-width: 100vw;
 }
 .text-left {
-    text-align: left;
+    left:50%;
 }
 .text-right {
     text-align: right;
+
 }
 </style>
