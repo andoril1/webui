@@ -1,77 +1,135 @@
 <template>
     
   <div class="container">
+    <div class="row justify-content-center info-box bg-yellow-gradient" v-if="pool">
+        <h4>Information about {{pool.coin.name}}</h4>
+        <div class="col-auto connect-info-box">
+            <h6><b>Coin:</b></h6>
+            <h6>{{ pool.coin.name }}</h6>
+        </div>
+        <div class="col-auto connect-info-box">
+            <h6><b>Algo:</b></h6>
+            <h6>{{ pool.coin.algorithm }}</h6>
+        </div>
+        <div class="col-auto connect-info-box" v-if="pool.coin.website">
+            <h6><b>Website:</b></h6>
+            <span>
+                <a :href="pool.coin.website"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>{{ pool.coin.website.replace('https://', "") }}
+            </span>
+        </div>
+        <div class="col-auto connect-info-box" v-if="pool.coin.github">
+            <h6><b>Github:</b></h6>
+            <span>
+                <a :href="pool.coin.github"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>{{ pool.coin.github.replace('https://' , "") }}
+            </span>
+        </div>
+        <div class="col-auto connect-info-box">
+            <h6><b>Payout Scheme:</b></h6>
+            <h6>{{ pool.paymentProcessing.payoutScheme }}</h6>
+        </div>
+        <div class="col-auto connect-info-box">
+            <h6><b>Pool Fee:</b></h6>
+            <h6>{{pool.poolFeePercent}}%</h6>
+        </div>
+        <hr>
+        <div class="row justify-content-center">
+            <h4>Choose stratum:</h4>
+            <div class="col-auto connect-stratum-box">
+                <h6><b>Select region:</b></h6>
+                <select v-model="selectedRegion">
+                    <option>Europe</option>
+                    <option>North America</option>
+                </select>
+            </div>
+            <div class="col-auto connect-stratum-box">
+                <h6><b>Select port:</b></h6>
+                <select v-model="selectedPort">
+                    <option v-for="(value, id) in pool.ports" :key="id" :value="id">{{value.name}} - VarDiff: {{ value.varDiff.minDiff }} &harr; &infin;</option>
+                </select>
+            </div>
+            <div class="col-auto connect-stratum-box">
+                <h6><b>Select OS:</b></h6>
+                <select v-model="selectedOS">
+                    <option>HiveOS</option>
+                    <option>Windows</option>
+                </select>
+            </div>
+        </div>
+        <hr>
+        <div class="row justify-content-center">
+            <h4>Stratum address:</h4>
+            <span class="codeCardCenter">
+                <h4>stratum+tcp://{{ stratumPrefix }}.flazzard.com:{{selectedPort}}
+                    <button @click="copyMe(stratumPrefix, selectedPort)" style="background-color: transparent; padding: 0px; border:0px">
+                    <img src="@/assets/img/copy.png" style="height: 25px; width: 25px;"></button></h4>   
+            </span>
+        </div>
+    </div>
+    <div class="row justify-content-center info-box bg-yellow-gradient" style="padding:2%" v-if="pool">
+        <h4>Getting started:</h4>
+        <div class="col-auto connect-background" style="padding:1%">
+            <h5>Requirements:</h5>
+            <div class="col-auto connect-info-box" style="margin:5%">
+                <h6>{{ pool.coin.name }} Wallet address</h6>
+            </div>
+            <div class="col-auto connect-info-box" style="margin:5%">
+                <h6>Mining software for {{ pool.coin.algorithm }}</h6>
+            </div>
+            <div class="col-auto connect-info-box" style="margin:5%">
+                <h6>Compatible hardware</h6>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto connect-background">
+                <h5>Getting wallet address:</h5>
+                <hr>
+                Build wallet from source, or if available you can download a wallet directly from Reaction website or github.
+                Follow the instruction on the Github to complete install, if you get stuck don't hesistate to either ask us or in the discord of Reaction
+                Please consider installing the wallet on a virtual machine unless you trust the project completely.
+                Warning: mining directly to an exchange is not recommended!
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto connect-background" v-if="selectedOS == 'HiveOS'">
+                <h5>HiveOS config suggestions:</h5>
+                <hr>
+                <div class="col-auto hiveoOS-wallet">
+                    <h6>Add wallet in HiveOS</h6>
+                    <img class="config-image" :src="require(`./../assets/img/HiveOS/Hiveos_Wallet1.webp`)" style="width:94%">
+                    <div class="codeCardCenter" style="margin-top:1%; margin-bottom:5%;">While on your <span class="blue-color">Hiveos Farm</span>, select <span class="green-color">Wallets</span> and click <span class="red-color">Add Wallet</span></div>
+                    <div class="row main-row-3">    
+                        <div class="col-6">
+                            <img class="config-image" :src="require(`./../assets/img/HiveOS/Hiveos_Wallet.png`)">
+                        </div>
+                        <div class="col-6">
+                          <br>
+                            <div class="codeCardCenter" style="margin-top:8%; margin-bottom:5%">
+                                Search for <span class="green-color">{{ pool.coin.symbol }}</span> or <span class="red-color">add it</span> if it doesn't exist.
+                            </div>
+                            <div class="codeCardCenter" style="margin-bottom:5%">
+                                Input <span class="green-color">wallet-address</span> for <span class="blue-color">{{ pool.coin.name }}</span>
+                            </div>
+                            <div class="codeCardCenter" style="margin-bottom:5%">
+                              Choose a <span class="green-color">name</span> for your wallet.
+                            </div>
+                            <div class="codeCardCenter" style="margin-bottom:32%">
+                              <span class="blue-color">Optional:</span> feel free to leave <span class="green-color">blank.</span>
+                            </div>
+                            <div class="codeCardCenter">
+                              Press <span class="red-color">Create</span> to save wallet.
+                            </div>
+                           
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
     <div class="row justify-content-center">
       <div class="col-auto" v-if="pool">
-          <div class="info-box bg-yellow-gradient">
-                  <span class="info-box-text">
-                      <h5>Connect your miner for {{ pool.coin.name }}</h5>
-                      <table style="margin: auto;">
-                      <tr>
-                          <th id="time">[Coin]</th>
-                          <th id="one">[Algo]</th>
-                          <th id="two" v-if="pool.coin.website">[Website]</th>
-                          <th id="three" v-if="pool.coin.github">[Github]</th>
-                          <th id="four">[Payout Scheme]</th>
-                          <th id="five">[Pool Fee]</th>
-                      </tr>
-                      <tr>
-                          <td style="padding-right: 10px;">{{ pool.coin.name }}</td>
-                          <td style="padding-right: 10px;">{{ pool.coin.algorithm }}</td>
-                          <td style="padding-right: 10px;" v-if="pool.coin.website"><a :href="pool.coin.website"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>{{ pool.coin.website.replace('https://', "") }}</td>
-                          <td style="padding-right: 10px;" v-if="pool.coin.github"><a :href="pool.coin.github"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>{{ pool.coin.github.replace('https://' , "") }}</td>
-                          <td style="padding-right: 10px;">{{ pool.paymentProcessing.payoutScheme }}</td>
-                          <td style="padding-right: 10px;">{{pool.poolFeePercent}}%</td>
-                          
-                      </tr>
-                  </table>
-                  <br>
-                  <table style="margin:auto">
-                      <tr>
-                          <th>Select region</th>
-                          <th>Select port</th>
-                          <th>Select OS</th>
-                      </tr>
-                      <tr>
-                          <td>
-                              <select v-model="selectedRegion">
-                                  <option>Europe</option>
-                                  <option>North America</option>
-                              </select>
-                          </td>
-                          <td>
-                              <select v-model="selectedPort">
-                                  <option v-for="(value, id) in pool.ports" :key="id" :value="id">{{value.name}} - VarDiff: {{ value.varDiff.minDiff }} &harr; &infin;</option>
-                              </select>
-                          </td>
-                          <td>
-                              <select v-model="selectedOS">
-                                  <option>HiveOS</option>
-                                  <option>Windows</option>
-                              </select>
-                          </td>
-                      </tr>
-                  </table>
-                  <br>
+
                   
-                  <h3>stratum+tcp://{{ stratumPrefix }}.flazzard.com:{{selectedPort}}
-                    <button @click="copyMe(stratumPrefix, selectedPort)" style="background-color: transparent; padding: 0px; border:0px">
-                    <img src="@/assets/img/copy.png" style="height: 25px; width: 25px;"></button></h3>
-                  <!--
-                    <h3 v-if="selectedPort && selectedRegion == 'Europe'">
-                      stratum+tcp://{{ stratumPrefix }}.flazzard.com:{{selectedPort}}
-                      <button @click="copyMe('eu', selectedPort)" style="background-color: transparent; padding: 0px; border:0px">
-                      <img src="@/assets/img/copy.png" style="height: 25px; width: 25px;"></button>
-                  </h3>
-                  <h3 v-if="selectedPort && selectedRegion == 'North America'">
-                      <pre>stratum+tcp://na.flazzard.com:{{selectedPort}}</pre>
-                      <button @click="copyMe('eu', selectedPort)" style="background-color: transparent; padding: 0px; border:0px;">
-                          <img src="@/assets/img/copy.png" style="height: 25px; width: 25px;">
-                      </button>
-                  </h3>
-                  -->
-                  </span>
-              </div>
               <div class="info-box bg-yellow-gradient">
                   <span class="info-box-text">
                       <h3>Miner Configuration</h3>
@@ -484,6 +542,7 @@ onMounted(() => {
     border-color: #f5f3f9;
     text-align: center;
     padding: 5px;
+    width:fit-content;
     
 }
 .green-color {
@@ -497,5 +556,37 @@ onMounted(() => {
 .red-color {
     color: rgb(250, 95, 95);
     font-weight: 600;
+}
+.connect-info-box {
+    width:fit-content;
+    border-radius: 10px;
+    padding:0.5%;
+    margin: 1%;
+    box-shadow:0 5px 5px rgba(0,0,0,0.5);
+    background-color: rgba(252, 10, 30, 0.39);
+}
+.connect-stratum-box {
+    width:fit-content;
+    border-radius: 10px;
+    padding:0.5%;
+    margin: 1%;
+    box-shadow:0 5px 5px rgba(0,0,0,0.5);
+    background-color: rgba(10, 252, 26, 0.39);
+}
+.connect-background {
+    background-color: rgb(156, 115, 122);
+    width:fit-content;
+    border-radius: 10px;
+    padding:5%;
+    margin: 1%;
+    box-shadow:0 5px 5px rgba(0,0,0,0.5);
+}
+.hiveoOS-wallet {
+    background-color: rgb(110, 56, 65);
+    width:fit-content;
+    border-radius: 10px;
+    padding:5%;
+    margin: 1%;
+    box-shadow:0 5px 5px rgba(0,0,0,0.5);
 }
 </style>

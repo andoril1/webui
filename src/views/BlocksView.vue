@@ -1,26 +1,54 @@
 <template>
-  <div class="container">
+    <div class="container">
+        <div class="row d-flex justify-content-center info-box bg-yellow-gradient" v-if="pool">
+            <div class="col-auto"><b><u>Time</u></b>
+                <div class="time" v-for="block in blocks" :key="block.id">
+                    <span v-html="renderTimeAgoBox(block.created)"></span>
+                </div>
+            </div>
+            <div class="col-auto address"><b><u>Mining Address</u></b>
+                <div v-for="block in blocks" :key="block.id">
+                    <a :href="pool.addressInfoLink.replace(pool.address, block.miner)" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>[{{block.miner.substring(0, 8)}}...{{ block.miner.substring(block.miner.length - 8) }}]
+                </div>
+            </div>
+            <div class="col-auto"><b><u></u>Height</b>
+                <div class="height" v-for="block in blocks" :key="block.id">
+                    {{ block.blockHeight }}
+                </div>
+            </div>
+            <div class="col-auto"><b><u></u>Net-diff</b>
+                <div class="net-diff" v-for="block in blocks" :key="block.id">
+                    {{ formatHashrate(block.networkDifficulty,2, "H") }}
+                </div>
+            </div>
+            <div class="col-auto"><b><u></u>Reward</b>
+                <div class="reward" v-for="block in blocks" :key="block.id">
+                    {{ formatHashrate(block.reward,1,"") }} {{pool.coin.symbol}}
+                </div>
+            </div>
+            <div class="col-auto status"><b><u></u>Status</b>
+                <div v-for="block in blocks" :key="block.id">
+                    <span v-if="block.confirmationProgress * 100 > 0">
+                        <a :href="block.infoLink" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>{{ block.status }}
+                    </span>
+                    <span v-else>
+                        <a :href="block.infoLink" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>{{ ' new ' }}
+                    </span>
+                </div>
+            </div>
+            <div class="col-auto"><b><u></u>Progress</b>
+                <div class="block-progress" v-for="block in blocks" :key="block.id">
+                    {{ formatHashrate(block.confirmationProgress * 100, 2, '%') }}
+                </div>
+            </div>
+
+        </div>
     <div class="row d-flex justify-content-center">
       <div class="col-auto" v-if="pool">
           <div class="info-box bg-yellow-gradient">
                   <span class="info-box-text">
                       <br>
                       <h5>Blocks found by Pool - {{ pool.coin.name }} [{{ pool.coin.symbol }}]</h5>
-                        <div class="time" style="width:15%"><b>Time</b>
-                            <div v-for="block in blocks" :key="block.id" style="margin:1%;">
-                                <span v-html="renderTimeAgoBox(block.created)"></span>
-                            </div>
-                        </div>
-                        <div class="address"><b>Mining Address</b>
-                            <div v-for="block in blocks" :key="block.id" style="margin:1%;">
-                                <a :href="pool.addressInfoLink.replace(pool.address, block.miner)" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H600v-80h160v-480H200v480h160v80H200Zm240 0v-246l-64 64-56-58 160-160 160 160-56 58-64-64v246h-80Z"/></svg></a>[{{block.miner.substring(0, 8)}}...{{ block.miner.substring(block.miner.length - 8) }}]
-                            </div>
-                        </div>
-                        <div class="height"><b>Height</b>
-                            <div v-for="block in blocks" :key="block.id" style="margin:1%;">
-                                {{ block.blockHeight }}
-                            </div>
-                        </div>
                       <table>
                       <tr>
                           <th id="time">Time</th>
@@ -176,4 +204,21 @@
         })
       </script>
     <style>
+    .time {
+        padding-bottom: 0.5%;
+        padding-top:7%;
+        border-bottom:1px solid white;
+    }
+    .height {
+        padding-bottom:1.93%;
+    }
+    .net-diff {
+        padding-bottom:2.13%;
+    }
+    .reward {
+        padding-bottom:1.53%;
+    }
+    .block-progress {
+        padding-bottom:1.72%;
+    }
     </style>

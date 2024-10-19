@@ -17,6 +17,45 @@
     </div>    
 </div>
 <div class="row d-flex justify-content-center">
+    <div class="col-auto info-box bg-yellow-gradient" v-for="pool in selectedScheme" :key="pool.id" style="margin:1%; width:16%">
+        <router-link :to="{ name: 'connect', params: { id: pool.id } }" style="text-decoration: none; color: azure;">
+        <br>
+        <img class="coinimg" :src="require(`./../assets/img/coin/icon/${pool.coin.symbol.toLowerCase()}.png`)" style="height: 25px; width: 25px;">
+        {{paymentScheme(pool.coin.name,pool.paymentProcessing.payoutScheme)}} [{{ pool.coin.symbol }}]                 
+        <div class="base-line col-auto" style="margin-top:10%">
+            <span class="left-line"><b>Algo:</b></span><span class="right-line">{{ pool.coin.algorithm }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Miners:</b></span><span class="right-line">{{ pool.poolStats.connectedMiners }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Pool Fee:</b></span><span class="right-line">{{pool.poolFeePercent}} %</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Threshold:</b></span><span class="right-line">{{ pool.paymentProcessing.minimumPayment }} {{pool.coin.symbol}}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Pool Hash:</b></span><span class="right-line">{{ formatHashrate(pool.poolStats.poolHashrate,2,"H/s") }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Dominance:</b></span><span class="right-line">{{ formatHashrate(pool.poolStats.poolHashrate / pool.networkStats.networkHashrate,5,"%") }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Net Hash:</b></span><span class="right-line">{{ formatHashrate(pool.networkStats.networkHashrate, 2, "H/s") }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Net Diff:</b></span><span class="right-line">{{ formatHashrate(pool.networkStats.networkDifficulty, 2, "H") }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Block Height:</b></span><span class="right-line">{{ pool.networkStats.blockHeight }}</span>
+        </div>
+        <div class="base-line col-auto">
+            <span class="left-line"><b>Last Block:</b></span><span class="right-line" v-html="renderTimeAgoBox(pool.lastPoolBlockTime)"></span>
+        </div>
+    </router-link>
+    </div>
+</div>
+<div class="row d-flex justify-content-center">
     <div class="col-auto" v-for="pool in selectedScheme" :key="pool.id">
         <div class="coin-card info-box bg-yellow-gradient">
             <router-link :to="{ name: 'connect', params: { id: pool.id } }" style="text-decoration: none; color: azure;">
@@ -24,12 +63,7 @@
                     <br>
                     <img class="coinimg" :src="require(`./../assets/img/coin/icon/${pool.coin.symbol.toLowerCase()}.png`)" style="height: 25px; width: 25px;">
                     {{paymentScheme(pool.coin.name,pool.paymentProcessing.payoutScheme)}} [{{ pool.coin.symbol }}]
-                    <hr>
-                    <div>
-                        <span class="text-left">Algo:</span>
-                        <span class="text-right">{{ pool.coin.algorithm }}</span>
-                    </div>
-                 
+                    <hr>                 
                     <table>
                         <tr style="border-bottom: 1px solid #ddd;">
                             <th style="text-align: left;">Algo:</th>
@@ -219,5 +253,16 @@ div {
 .text-right {
     text-align: right;
 
+}
+.base-line {
+    border-bottom:1px solid #fff;
+    text-align:left;
+}
+.left-line {
+    padding-right: 5%;
+    font-size: 14px;
+}
+.right-line {
+    font-size: 14px;
 }
 </style>
